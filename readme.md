@@ -1,4 +1,4 @@
-# Rental Analytics Batch Pipeline
+# Batch Data Processing for Rental Marketplace Analytics
 
 ## Overview
 
@@ -16,6 +16,10 @@ Aurora  ─► Glue Job (extract_aurora_to_s3) ─►  Raw S3  ─► Glue Job (
                                                                   ▼
                                                           Presentation  
 ```
+
+## Architecture Diagram 
+
+![Architecture Diagram](Architecture_diagram.svg)
 
 ---
 
@@ -45,8 +49,8 @@ Aurora  ─► Glue Job (extract_aurora_to_s3) ─►  Raw S3  ─► Glue Job (
 
 | Job                                  | Purpose                                                                  | Trigger                         |
 | ------------------------------------ | ------------------------------------------------------------------------ | ------------------------------- |
-| **extract\_aurora\_to\_s3**          | Runs an SQL unload from Aurora → writes parquet to S3 (`raw/aurora/`)    |
-| **lab2\_s3\_to\_raw\_complete**      | Parses/unifies raw files, writes  parquet to `raw/`             | After extract job completes     |
+| **extract\_aurora\_to\_s3**          | queries the data from Aurora, pulls the data into a sark dynamic frame → writes parquet to S3 (`raw/`)    | Step Function
+| **lab2\_s3\_to\_raw\_complete**      | Parses/unifies raw files, writes  parquet to **Redshift curated**  schema  | After extract job completes     |
 | **lab2\_raw\_to\_curated\_complete** | Cleans, type‑casts, deduplicates, loads into **Redshift curated** schema | Step Functions                  |
 | **lab2\_curated\_to\_presentation**  | Aggregates KPIs, populates **presentation** schema tables                | Step Functions                  |
 
@@ -77,7 +81,7 @@ Aurora  ─► Glue Job (extract_aurora_to_s3) ─►  Raw S3  ─► Glue Job (
 **Key points**
 
 - Every task has identical retry (3× exponential backoff).
-- Any unrecoverable failure routes to `FailState` for alerting (CloudWatch + SNS).
+- Any unrecoverable failure routes to `FailState`.
 
 ---
 
@@ -105,7 +109,7 @@ GROUP BY 1,2;
 1. **Create Redshift schemas**.
 2. **Upload Glue scripts** to an S3 code bucket.
 3. **Create Glue Jobs** (use IAM role with access to S3, Redshift, KMS).
-4. **Deploy Step Functions** via AWS Console or `aws stepfunctions create-state-machine`.
+4. **Deploy Step Functions** via AWS Console.
 
 ---
 
