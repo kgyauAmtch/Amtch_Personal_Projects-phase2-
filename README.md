@@ -1,6 +1,10 @@
-# Cloud ETL Pipeline
+# ETL pipeline with Airflow
 
-This document explains the components and workflow of the Extract, Transform, Load (ETL) pipeline, which uses **Amazon S3** for storage, **Airflow** for orchestration, and **Amazon Redshift** for data warehousing. This pipeline is designed to process music streaming data, user information, and song details to calculate valuable Key Performance Indicators (KPIs).
+A music streaming service requires an end-to-end data pipeline to analyze user streaming behavior. The data pipeline integrates data from multiple sources, processes it, and generate key performance indicators (KPIs) for business intelligence.
+The streaming data is being stored in **Amazon S3** and the user and song metadata in an RDS. 
+- Apache Airflow handles the orchestration of the pipeline where the streaming data(song data) that hits the s3 is ingested and the user and song metadata in the RDS is ingested and carried further downstream. 
+- Amazon Redshift is implemented here for data warehousing 
+
 
 ## 1. Overall Pipeline Purpose
 
@@ -8,7 +12,7 @@ Imagine you have a music streaming service. Every time someone listens to a song
 
 This pipeline's main goal is to:
 
-* Collect all this **raw data** from various sources (S3 buckets).
+* Collect all this **raw data** from various sources whiich is the S3 bucket and the Amazon RDS.
 * **Clean and prepare** the data to ensure it's accurate and consistent.
 * Calculate important **metrics (KPIs)** like how many unique users are listening per hour, which artists are most popular, or the listening trends for different music genres.
 * Load these prepared and analyzed insights into a powerful database (**Redshift**) where they can be quickly queried for reporting and business decisions.
