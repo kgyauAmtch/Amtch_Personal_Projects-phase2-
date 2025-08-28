@@ -11,7 +11,7 @@ from helper_functions import read_s3_csv_to_df, write_df_to_s3_csv
 
 # --- S3-based Log for Processed Streams Files (Recommended for MWAA) ---
 # This approach stores the list of processed S3 keys in a text file within an S3 bucket.
-# This S3 bucket and key should be configured in mwaa_dag.py and passed to the callable.
+# This S3 bucket and key should be configured in etl_dag.py and passed to the callable.
 
 def get_processed_files_s3(log_bucket: str, log_key: str, aws_conn_id: str = 'aws_default') -> set:
     """Reads the list of already processed S3 keys from an S3 log file."""
